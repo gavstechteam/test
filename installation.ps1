@@ -9,19 +9,19 @@
  $WebServerPort = $env:webserverport
  $WebServerPackage = $env:webserverpackage
  $InstallSplunk = $env:installsplunk
- $SplunkFwdIP = $env:splunkfwdip
+ $SplunkFwdIP =  $env:splunkfwdip
  
  <# Install Chocolatey  #>
 iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 refreshenv
-
+		
 <# Install IIS Server #>
-#Install-WindowsFeature -Name web-server -IncludeManagementTools
-#Install-WindowsFeature -Name Web-Asp-Net45
+Install-WindowsFeature -Name web-server -IncludeManagementTools
+Install-WindowsFeature -Name Web-Asp-Net45
 
 <# Configure the IIS server #>
-#Set-WebBinding -Name 'Default Web Site' -BindingInformation "*:80:" -PropertyName Port -Value 8080
-#netsh advfirewall firewall add rule name="HTTP Web Application" dir=in action=allow protocol=TCP localport=8080
+Set-WebBinding -Name 'Default Web Site' -BindingInformation "*:80:" -PropertyName Port -Value 8080
+netsh advfirewall firewall add rule name="HTTP Web Application" dir=in action=allow protocol=TCP localport=8080
 
 
 #If($InstallIIS -eq 'true')
@@ -32,23 +32,22 @@ refreshenv
 
     <# Configure the Firewall #>
     #Set-WebBinding -Name 'Default Web Site' -BindingInformation "*:80:" -PropertyName Port -Value $WebServerPort
-    netsh advfirewall firewall add rule name="HTTP Web Application" dir=in action=allow protocol=TCP localport=$WebServerPort
+    #netsh advfirewall firewall add rule name="HTTP Web Application" dir=in action=allow protocol=TCP localport=$WebServerPort
 
     If($WebServerPackage -ne '')
     {
         # Folders
-        New-Item -ItemType Directory c:\temp
-        New-Item -ItemType Directory c:\sites
+#        New-Item -ItemType Directory c:\temp
+#        New-Item -ItemType Directory c:\sites
 
         # Download app package
-        Invoke-WebRequest  $WebServerPackage -OutFile c:\temp\app.zip
-        Expand-Archive C:\temp\app.zip c:\sites
+#        Invoke-WebRequest  $WebServerPackage -OutFile c:\temp\app.zip
+#        Expand-Archive C:\temp\app.zip c:\sites
 
         # Configure iis
-        Remove-WebSite -Name "Default Web Site"
+#        Remove-WebSite -Name "Default Web Site"
         #Set-ItemProperty IIS:\AppPools\DefaultAppPool\ managedRuntimeVersion ""
-        New-Website -Name "Application" -Port 80 -PhysicalPath C:\sites\ -ApplicationPool DefaultAppPool
-        & iisreset
+#        New-Website -Name "Application" -Port 80 -PhysicalPath C:\sites\ -ApplicationPool DefaultAppPool & iisreset
     }
 #}
 
