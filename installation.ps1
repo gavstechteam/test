@@ -11,7 +11,7 @@
 		[bool]$InstallTomcat=0,
 		[bool]$InstallWebSphere=0,
 		[bool]$InstallMySQL=0,
-		[bool]$InstallGooglechrome=0,
+		[bool]$InstallGooglechrome=1,
 		[bool]$InstallPutty=0,
 		[bool]$Install7Zip=0,
 		[string]$WebServerPort='',
