@@ -1,3 +1,9 @@
+<# Installing additional Components like
+	IIS, Tomcat, Websphere, MySQL softwares and
+	Google Chrome browser, Putty, 7Zip utilities
+	in Azure windows based vm images
+#>
+
 <# Import environment variables #>
  param
 	(
@@ -5,7 +11,7 @@
 		[bool]$InstallTomcat=0,
 		[bool]$InstallWebSphere=0,
 		[bool]$InstallMySQL=0,
-		[bool]$InstallGooglechrome=1,
+		[bool]$InstallGooglechrome=0,
 		[bool]$InstallPutty=0,
 		[bool]$Install7Zip=0,
 		[string]$WebServerPort='',
@@ -101,9 +107,9 @@
 		#        Expand-Archive C:\temp\app.zip c:\sites
 
 				# Configure iis
-		#        Remove-WebSite -Name "Default Web Site"
+		#       Remove-WebSite -Name "Default Web Site"
 				#Set-ItemProperty IIS:\AppPools\DefaultAppPool\ managedRuntimeVersion ""
-		#        New-Website -Name "Application" -Port 80 -PhysicalPath C:\sites\ -ApplicationPool DefaultAppPool & iisreset
+		#       New-Website -Name "Application" -Port 80 -PhysicalPath C:\sites\ -ApplicationPool DefaultAppPool & iisreset
 			}
 		#}
 	}
