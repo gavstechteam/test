@@ -132,8 +132,16 @@
 	# $WebServerPort = $env:webserverport
 	# $WebServerPackage = $env:webserverpackage
 
-	choco feature enable -n allowGlobalConfirmation
-
+	try {
+		choco feature enable -n allowGlobalConfirmation
+	}
+	catch
+	{
+		Write-Output "Unable to install Google Chrome browser"
+		$ErrorMessage = $_.Exception.Message
+		$FailedItem = $_.Exception.ItemName
+		Write-Output $ErrorMessage
+	}
 
 	try {
 		if($InstallGooglechrome -eq 1)
@@ -150,20 +158,20 @@
 		Write-Output $ErrorMessage
 	}
 
-	try {
-		If($InstallPutty -eq 1)
-		{
-			<# Putty application #>
-			choco install putty.install -y
-		}
-	}
-	catch
-	{
-		Write-Output "Unable to install Putty application"
-		$ErrorMessage = $_.Exception.Message
-		$FailedItem = $_.Exception.ItemName
-		Write-Output $ErrorMessage
-	}
+	#try {
+	#	If($InstallPutty -eq 1)
+	#	{
+	#		<# Putty application #>
+	#		#choco install putty.install -y
+	#	}
+	#}
+	#catch
+	#{
+	#	Write-Output "Unable to install Putty application"
+	#	$ErrorMessage = $_.Exception.Message
+	#	$FailedItem = $_.Exception.ItemName
+	#	Write-Output $ErrorMessage
+	#}
 
 	try {
 		If($InstallMySQL -eq 1)
