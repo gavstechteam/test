@@ -45,6 +45,17 @@
 	}
 
 	try {
+		choco feature enable -n allowGlobalConfirmation
+	}
+	catch
+	{
+		Write-Output "Unable to enable global confirmation in chololatey"
+		$ErrorMessage = $_.Exception.Message
+		$FailedItem = $_.Exception.ItemName
+		Write-Output $ErrorMessage
+	}
+
+	try {
 		<# VC++ runtimes needed as dependencies for other installations #>
 		choco install vcredist-all -y
 	}
@@ -56,26 +67,32 @@
 		Write-Output $ErrorMessage
 	}
 
-	try {
-		<# SQL Server Management Studio #>
-		choco install sql-server-management-studio -y
-	}
-	catch
-	{
-		Write-Output "Unable to install SQL Server management Studio"
-		$ErrorMessage = $_.Exception.Message
-		$FailedItem = $_.Exception.ItemName
-		Write-Output $ErrorMessage
-	}
+
 		
 	try {
-		<# Install IIS Server #>
-		Install-WindowsFeature -Name web-server -IncludeManagementTools
-		Install-WindowsFeature -Name Web-Asp-Net45
+		If($InstallIIS -eq 'true')
+		{
+			<# Install IIS Server #>
+			Install-WindowsFeature -Name web-server -IncludeManagementTools
+			Install-WindowsFeature -Name Web-Asp-Net45
 
-		<# Configure the IIS server #>
-		Set-WebBinding -Name 'Default Web Site' -BindingInformation "*:80:" -PropertyName Port -Value 8080
-		netsh advfirewall firewall add rule name="HTTP Web Application" dir=in action=allow protocol=TCP localport=8080
+			<# Configure the IIS server #>
+			Set-WebBinding -Name 'Default Web Site' -BindingInformation "*:80:" -PropertyName Port -Value 8080
+			netsh advfirewall firewall add rule name="HTTP Web Application" dir=in action=allow protocol=TCP localport=8080
+		
+			try 
+			{
+				<# SQL Server Management Studio #>
+				choco install sql-server-management-studio -y
+			}
+			catch
+			{
+				Write-Output "Unable to install SQL Server management Studio"
+				$ErrorMessage = $_.Exception.Message
+				$FailedItem = $_.Exception.ItemName
+				Write-Output $ErrorMessage
+			}
+		}
 	}
 	catch
 	{
@@ -132,16 +149,7 @@
 	# $WebServerPort = $env:webserverport
 	# $WebServerPackage = $env:webserverpackage
 
-	try {
-		choco feature enable -n allowGlobalConfirmation
-	}
-	catch
-	{
-		Write-Output "Unable to install Google Chrome browser"
-		$ErrorMessage = $_.Exception.Message
-		$FailedItem = $_.Exception.ItemName
-		Write-Output $ErrorMessage
-	}
+
 
 	try {
 		if($InstallGooglechrome -eq 'true')
@@ -158,20 +166,20 @@
 		Write-Output $ErrorMessage
 	}
 
-	#try {
-	#	If($InstallPutty -eq 1)
-	#	{
-	#		<# Putty application #>
-	#		#choco install putty.install -y
-	#	}
-	#}
-	#catch
-	#{
-	#	Write-Output "Unable to install Putty application"
-	#	$ErrorMessage = $_.Exception.Message
-	#	$FailedItem = $_.Exception.ItemName
-	#	Write-Output $ErrorMessage
-	#}
+	try {
+		If($InstallPutty -eq 'true')
+		{
+			<# Putty application #>
+			choco install putty -y
+		}
+	}
+	catch
+	{
+		Write-Output "Unable to install Putty application"
+		$ErrorMessage = $_.Exception.Message
+		$FailedItem = $_.Exception.ItemName
+		Write-Output $ErrorMessage
+	}
 
 	try {
 		If($InstallMySQL -eq 'true')
