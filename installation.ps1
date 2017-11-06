@@ -7,13 +7,13 @@
 <# Import environment variables #>
  param
 	(
-		[bool]$InstallIIS=1,
-		[bool]$InstallTomcat=0,
-		[bool]$InstallWebSphere=0,
-		[bool]$InstallMySQL=0,
-		[bool]$InstallGooglechrome=0,
-		[bool]$InstallPutty=0,
-		[bool]$Install7Zip=0,
+		[string]$InstallIIS=1,
+		[string]$InstallTomcat=0,
+		[string]$InstallWebSphere=0,
+		[string]$InstallMySQL=0,
+		[string]$InstallGooglechrome=0,
+		[string]$InstallPutty=0,
+		[string]$Install7Zip=0,
 		[string]$WebServerPort='',
 		[string]$WebServerPackage=''
 	)
@@ -86,7 +86,7 @@
 	}
 
 	try {
-		#If($InstallIIS -eq 1)
+		#If($InstallIIS -eq 'true')
 		#{
 			<# Install the IIS server #>
 			#Install-WindowsFeature -Name web-server -IncludeManagementTools
@@ -144,7 +144,7 @@
 	}
 
 	try {
-		if($InstallGooglechrome -eq 1)
+		if($InstallGooglechrome -eq 'true')
 		{
 			<# Google Chrome Browser #>
 			choco install googlechrome -y
@@ -174,7 +174,7 @@
 	#}
 
 	try {
-		If($InstallMySQL -eq 1)
+		If($InstallMySQL -eq 'true')
 		{
 			<# 7zip application #>
 			choco install 7zip -y
