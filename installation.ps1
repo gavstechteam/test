@@ -44,16 +44,16 @@
 		Write-Output $ErrorMessage
 	}
 
-	try {
-		choco feature enable -n allowGlobalConfirmation
-	}
-	catch
-	{
-		Write-Output "Unable to enable global confirmation in chololatey"
-		$ErrorMessage = $_.Exception.Message
-		$FailedItem = $_.Exception.ItemName
-		Write-Output $ErrorMessage
-	}
+	#try {
+	#	choco feature enable -n allowGlobalConfirmation
+	#}
+	#catch
+	#{
+	#	Write-Output "Unable to enable global confirmation in chololatey"
+	#	$ErrorMessage = $_.Exception.Message
+	#	$FailedItem = $_.Exception.ItemName
+	#	Write-Output $ErrorMessage
+	#}
 
 	try {
 		<# VC++ runtimes needed as dependencies for other installations #>
@@ -198,4 +198,3 @@
 		$FailedItem = $_.Exception.ItemName
 		Write-Output $ErrorMessage
 	}
-	
