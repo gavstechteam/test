@@ -11,17 +11,21 @@
 		[string]$InstallTomcat='false',
 		[string]$InstallWebSphere='false',
 		[string]$InstallMySQL='false',
-		[string]$InstallGooglechrome='false',
-		[string]$InstallPutty='false',
-		[string]$Install7Zip='false',
+		[string]$InstallGooglechrome='true',
+		[string]$InstallPutty='true',
+		[string]$Install7Zip='true',
 		[string]$WebServerPort='',
-		[string]$WebServerPackage=''
+		[string]$WebServerPackage='',
+		[string]$TimeZone=''
 	)
 
 	try {
 	<# Altering the time zone of the machine #>
-		cd $env:WINDIR\system32\
-		tzutil /s 'India Standard Time'
+		If(!($TimeZone -eq ''))
+		{
+			cd $env:WINDIR\system32\
+			tzutil /s $TimeZone
+		}
 	}
 	catch
 	{
