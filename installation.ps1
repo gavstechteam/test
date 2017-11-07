@@ -7,13 +7,13 @@
 <# Import environment variables #>
  param
 	(
-		[string]$InstallIIS=1,
-		[string]$InstallTomcat=0,
-		[string]$InstallWebSphere=0,
-		[string]$InstallMySQL=0,
-		[string]$InstallGooglechrome=0,
-		[string]$InstallPutty=0,
-		[string]$Install7Zip=0,
+		[string]$InstallIIS='false',
+		[string]$InstallTomcat='false',
+		[string]$InstallWebSphere='false',
+		[string]$InstallMySQL='false',
+		[string]$InstallGooglechrome='false',
+		[string]$InstallPutty='false',
+		[string]$Install7Zip='false',
 		[string]$WebServerPort='',
 		[string]$WebServerPackage=''
 	)
