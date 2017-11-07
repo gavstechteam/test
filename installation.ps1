@@ -7,7 +7,7 @@
 <# Import environment variables #>
  param
 	(
-		[string]$InstallIIS='false',
+		[string]$InstallIIS='true',
 		[string]$InstallTomcat='false',
 		[string]$InstallWebSphere='false',
 		[string]$InstallMySQL='false',
