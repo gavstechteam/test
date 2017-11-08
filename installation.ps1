@@ -61,7 +61,11 @@
 
 	try {
 		<# VC++ runtimes needed as dependencies for other installations #>
-		choco install vcredist-all -y
+		#choco install vcredist-all -y
+		choco install vcredist2012 -y
+		choco install vcredist2013 -y
+		choco install vcredist2015 -y
+		choco install vcredist140 -y
 	}
 	catch
 	{
