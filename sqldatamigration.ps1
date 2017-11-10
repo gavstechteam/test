@@ -2,7 +2,7 @@
 Param 
 (
       [parameter(Mandatory = $false)]
-      [string] $SrcServer = "ZIRRUSWEBSVR",
+      [string] $SrcServer = "(local)",
 
       [parameter(Mandatory = $false)]
       [string] $SrcDatabase = "zirrus",
@@ -17,7 +17,7 @@ Param
       [string] $SrcPwd = "Z!rrus99",
 
       [parameter(Mandatory = $false)]
-      [string] $DestServer = "ZIRRUSWEBSVR",
+      [string] $DestServer = "(local)",
 
       # Name of the destination database is optional. When omitted, it is set to the source database name.
       [parameter(Mandatory = $false)]
@@ -81,22 +81,23 @@ $SrcConn.Open()
 $cmd.Connection = $SrcConn
 $cmd.ExecuteNonQuery()
 
-$cmd.CommandText = "declare @sqlstmt nvarchar(1000)
-set @sqlstmt ='begin
-declare @iCnt int = 1
-declare @iCntStr varchar(max)
-	while (@iCnt <= 1000)
-		begin
-		set @iCntStr = cast( @iCnt as varchar(3))
-		insert into SourceDB1 ([FirstName],[LastName],[DOB],[Email],[Department],[SSIN],[AccountNumber],[Address], [DrivingLicence] ) values (''FirstName'' + @iCntStr, ''LastName'' + @iCntStr , dateadd(MONTH, convert(int,100*rand()), ''1-Jan-1980'') , ''FirstName'' + @iCntStr + ''@gavstech.com'', ''Department'' + @iCntStr , ''100000000'' + @iCnt, ''1250000'' + @iCnt, ''Address, No: '' + @iCntStr , ''Drive000'' + @iCntStr )
-		set  @iCnt = @iCnt +1
-		end
-end'
+#$cmd.CommandText = "declare @sqlstmt nvarchar(1000)
+#set @sqlstmt ='begin
+#declare @iCnt int = 1
+#declare @iCntStr varchar(max)
+#	while (@iCnt <= 1000)
+#		begin
+#		set @iCntStr = cast( @iCnt as varchar(3))
+#		insert into SourceDB1 ([FirstName],[LastName],[DOB],[Email],[Department],[SSIN],[AccountNumber],[Address], [DrivingLicence] ) values (''FirstName'' + @iCntStr, ''LastName'' + @iCntStr , dateadd(MONTH, convert(int,100*rand()), ''1-Jan-1980'') , ''FirstName'' + @iCntStr + ''@gavstech.com'', ''Department'' + @iCntStr , ''100000000'' + @iCnt, ''1250000'' + @iCnt, ''Address, No: '' + @iCntStr , ''Drive000'' + @iCntStr )
+#		set  @iCnt = @iCnt +1
+#		end
+#end'
+#
+#exec sp_executesql @sqlstmt"
+#$cmd.Connection = $SrcConn
+#$cmd.ExecuteNonQuery()
+#$SrcConn.Close()
 
-exec sp_executesql @sqlstmt"
-$cmd.Connection = $SrcConn
-$cmd.ExecuteNonQuery()
-$SrcConn.Close()
 
 $CmdText = "SELECT * FROM " + $SrcTable
 $SqlCommand = New-Object system.Data.SqlClient.SqlCommand($CmdText, $SrcConn) 
