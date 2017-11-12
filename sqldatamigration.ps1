@@ -8,7 +8,7 @@ Param
       [string] $SrcDatabase = "sourceDB",
 
       [parameter(Mandatory = $false)]
-      [string] $SrcTable = "sourcedb",
+      [string] $SrcTable = "sourceTbl",
 
       [parameter(Mandatory = $false)]
       [string] $SrcUserName = "srcuser",
@@ -25,7 +25,7 @@ Param
 
       # Name of the destination table is optional. When omitted, it is set to the source table name.
       [parameter(Mandatory = $false)]
-      [string] $DestTable = "targetdb", 
+      [string] $DestTable = "targetTbl", 
 
       [parameter(Mandatory = $false)]
       [string] $DestUserName = "destuser",
@@ -185,10 +185,10 @@ $CmdText = "SELECT * FROM " + $SrcTable
 $SqlCommand = New-Object system.Data.SqlClient.SqlCommand($CmdText, $SrcConn) 
 ReOpenConnection($SrcConn)
 [System.Data.SqlClient.SqlDataReader] $SqlReader = $SqlCommand.ExecuteReader()
-Write-Host "SRC connected"
+Write-Host "Source Table connected"
 
     $DestConnStr = ConnectionString $DestServer $DestDatabase $DestUserName $DestPwd
-    Write-Host "DEST connected"
+    Write-Host "Destination DB connected"
 
     write-host "Create Target Table"
     $cmd1  = new-object System.Data.SQLClient.SQLCommand
