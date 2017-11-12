@@ -35,17 +35,19 @@ Param
 
       [switch] $Truncate = $false # Include this switch to truncate the destination table before the copy.
   )
+
+  
+# If ($DestDatabase.Length –eq 0) 
+# {
+#    $DestDatabase = $SrcDatabase
+# }
+
+
+# If ($DestTable.Length –eq 0) 
+# {
+#    $DestTable = $SrcTable
+# }
  
- If ($DestDatabase.Length –eq 0) 
- {
-    $DestDatabase = $SrcDatabase
- }
-
-
- If ($DestTable.Length –eq 0) 
- {
-    $DestTable = $SrcTable
- }
 
 
 Function ConnectionString([string] $ServerName, [string] $DbName, [string] $UserName, [string] $pwd)
