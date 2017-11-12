@@ -50,7 +50,7 @@ Param
 
 Function ConnectionString([string] $ServerName, [string] $DbName, [string] $UserName, [string] $pwd)
 {
-    "Data Source=$ServerName;Initial Catalog=$DbName;User Id=$UserName;Password=$pwd;Integrated Security=False;"
+    "Data Source=$ServerName;Initial Catalog=$DbName;User Id=$UserName;Password=$pwd;Integrated Security=False;Connect Timeout=120"
 }
 
 Function ReOpenConnection([System.Data.SqlClient.SqlConnection] $conn)
@@ -65,6 +65,30 @@ Function ReOpenConnection([System.Data.SqlClient.SqlConnection] $conn)
 
 Try
   {
+
+Write-Host "Enabing Mixed mode authentication"
+
+$rootConnStr = "Data Source=(local);Initial Catalog=master;Integrated Security=true;Connect Timeout=120"
+$rootConn  = New-Object System.Data.SqlClient.SQLConnection($rootConnStr)
+$rootcmd  = new-object System.Data.SQLClient.SQLCommand
+
+$rootcmd.CommandText = "USE MASTER;
+EXEC xp_instance_regwrite N'HKEY_LOCAL_MACHINE', N'Software\Microsoft\MSSQLServer\MSSQLServer', N'LoginMode', REG_DWORD, 2
+
+ALTER LOGIN sa ENABLE;
+ALTER LOGIN sa WITH PASSWORD = 'gavs_123' ;
+"
+
+$rootConn.Open()
+$rootcmd.Connection = $rootConn
+$rootcmd.ExecuteNonQuery()
+$rootConn.Close()
+$rootcmd.Dispose()
+
+Restart-Service -Force MSSQLSERVER
+
+Write-Host "Enabing Mixed mode authentication - Completed"
+
 $masterConnStr = ConnectionString "(local)" "master" "sa" "gavs_123"
 $masterConn  = New-Object System.Data.SqlClient.SQLConnection($masterConnStr)
 
@@ -170,19 +194,14 @@ declare @iCntStr varchar(max)
 	while (@iCnt <= 10000)
 		begin
 		set @iCntStr = cast( @iCnt as varchar(9))
-		insert into " + $SrcTable + " ([FirstName],[LastName],[DOB],[Email],[Department],[SSIN],[AccountNumber],[Address], [DrivingLicence], [CreatedDate] ) 
-
-values (''FirstName'' + @iCntStr, ''LastName'' + @iCntStr , dateadd(MONTH, convert(int,100*rand()), ''1-Jan-1980'') , ''FirstName'' + @iCntStr + ''@gavstech.com'', 
-
-''Department'' + cast(convert(int,10*rand()+1) as varchar(10)) , ''100000000'' + @iCnt, ''1250000'' + @iCnt, ''Address, No: '' + @iCntStr , ''Drive000'' + @iCntStr, 
-
-dateadd(day, -convert(int,10*rand()), getdate()) )
+		insert into " + $SrcTable + " ([FirstName],[LastName],[DOB],[Email],[Department],[SSIN],[AccountNumber],[Address], [DrivingLicence], [CreatedDate] ) values (''FirstName'' + @iCntStr, ''LastName'' + @iCntStr , dateadd(MONTH, convert(int,100*rand()), ''1-Jan-1980'') , ''FirstName'' + @iCntStr + ''@gavstech.com'', ''Department'' + cast(convert(int,10*rand()+1) as varchar(10)) , ''100000000'' + @iCnt, ''1250000'' + @iCnt, ''Address, No: '' + @iCntStr , ''Drive000'' + @iCntStr, dateadd(day, -convert(int,10*rand()), getdate()) )
 		set  @iCnt = @iCnt +1
 	end
 end'
 
 exec sp_executesql @sqlstmt"
 ReOpenConnection($SrcConn)
+$cmd.CommandTimeout = 600
 $cmd.Connection = $SrcConn
 $cmd.ExecuteNonQuery()
 
@@ -228,15 +247,14 @@ Write-Host "Source Table connected"
     $bulkcopy.columnmappings.add("Email", "Email");
     $bulkcopy.columnmappings.add("Department", "Department");
     $bulkcopy.columnmappings.add("CreatedDate", "CreatedDate");
-    $bulkcopy.batchsize = 100
-    $bulkcopy.bulkcopytimeout = 120
+    $bulkcopy.batchsize = 500
+    $bulkcopy.bulkcopytimeout = 600
 
     Write-Host "Copying Started"
     $bulkCopy.WriteToServer($sqlReader)
    
     Write-Host "Table $SrcTable in $SrcDatabase database on $SrcServer has been copied to table $DestTable in $DestDatabase database on $DestServer"
     Write-Host "Completed"
-    
   }
   Catch [System.Exception]
   {
