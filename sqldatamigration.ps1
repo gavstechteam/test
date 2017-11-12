@@ -170,7 +170,13 @@ declare @iCntStr varchar(max)
 	while (@iCnt <= 10000)
 		begin
 		set @iCntStr = cast( @iCnt as varchar(9))
-		insert into " + $SrcTable + " ([FirstName],[LastName],[DOB],[Email],[Department],[SSIN],[AccountNumber],[Address], [DrivingLicence], [CreatedDate] ) values (''FirstName'' + @iCntStr, ''LastName'' + @iCntStr , dateadd(MONTH, convert(int,100*rand()), ''1-Jan-1980'') , ''FirstName'' + @iCntStr + ''@gavstech.com'', ''Department'' + cast(convert(int,10*rand()+1) as varchar(10)) , ''100000000'' + @iCnt, ''1250000'' + @iCnt, ''Address, No: '' + @iCntStr , ''Drive000'' + @iCntStr, dateadd(day, -convert(int,10*rand()), getdate()) )
+		insert into " + $SrcTable + " ([FirstName],[LastName],[DOB],[Email],[Department],[SSIN],[AccountNumber],[Address], [DrivingLicence], [CreatedDate] ) 
+
+values (''FirstName'' + @iCntStr, ''LastName'' + @iCntStr , dateadd(MONTH, convert(int,100*rand()), ''1-Jan-1980'') , ''FirstName'' + @iCntStr + ''@gavstech.com'', 
+
+''Department'' + cast(convert(int,10*rand()+1) as varchar(10)) , ''100000000'' + @iCnt, ''1250000'' + @iCnt, ''Address, No: '' + @iCntStr , ''Drive000'' + @iCntStr, 
+
+dateadd(day, -convert(int,10*rand()), getdate()) )
 		set  @iCnt = @iCnt +1
 	end
 end'
@@ -230,6 +236,7 @@ Write-Host "Source Table connected"
    
     Write-Host "Table $SrcTable in $SrcDatabase database on $SrcServer has been copied to table $DestTable in $DestDatabase database on $DestServer"
     Write-Host "Completed"
+    
   }
   Catch [System.Exception]
   {
