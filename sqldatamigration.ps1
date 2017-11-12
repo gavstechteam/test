@@ -63,6 +63,8 @@ Function ReOpenConnection([System.Data.SqlClient.SqlConnection] $conn)
     $conn.Open()
 }
 
+Try
+  {
 $masterConnStr = ConnectionString "(local)" "master" "sa" "gavs_123"
 $masterConn  = New-Object System.Data.SqlClient.SQLConnection($masterConnStr)
 
@@ -165,10 +167,10 @@ declare @sqlstmt nvarchar(1000)
 set @sqlstmt ='begin
 declare @iCnt int = 1
 declare @iCntStr varchar(max)
-	while (@iCnt <= 1000)
+	while (@iCnt <= 10000)
 		begin
 		set @iCntStr = cast( @iCnt as varchar(9))
-		insert into " + $SrcTable + " ([FirstName],[LastName],[DOB],[Email],[Department],[SSIN],[AccountNumber],[Address], [DrivingLicence], [CreatedDate] ) values (''FirstName'' + @iCntStr, ''LastName'' + @iCntStr , dateadd(MONTH, convert(int,100*rand()), ''1-Jan-1980'') , ''FirstName'' + @iCntStr + ''@gavstech.com'', ''Department'' + @iCntStr , ''100000000'' + @iCnt, ''1250000'' + @iCnt, ''Address, No: '' + @iCntStr , ''Drive000'' + @iCntStr, dateadd(day, -convert(int,10*rand()), getdate()) )
+		insert into " + $SrcTable + " ([FirstName],[LastName],[DOB],[Email],[Department],[SSIN],[AccountNumber],[Address], [DrivingLicence], [CreatedDate] ) values (''FirstName'' + @iCntStr, ''LastName'' + @iCntStr , dateadd(MONTH, convert(int,100*rand()), ''1-Jan-1980'') , ''FirstName'' + @iCntStr + ''@gavstech.com'', ''Department'' + cast(convert(int,10*rand()+1) as varchar(10)) , ''100000000'' + @iCnt, ''1250000'' + @iCnt, ''Address, No: '' + @iCntStr , ''Drive000'' + @iCntStr, dateadd(day, -convert(int,10*rand()), getdate()) )
 		set  @iCnt = @iCnt +1
 	end
 end'
@@ -184,8 +186,7 @@ $SqlCommand = New-Object system.Data.SqlClient.SqlCommand($CmdText, $SrcConn)
 ReOpenConnection($SrcConn)
 [System.Data.SqlClient.SqlDataReader] $SqlReader = $SqlCommand.ExecuteReader()
 Write-Host "SRC connected"
-Try
-  {
+
     $DestConnStr = ConnectionString $DestServer $DestDatabase $DestUserName $DestPwd
     Write-Host "DEST connected"
 
