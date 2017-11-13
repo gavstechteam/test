@@ -87,7 +87,9 @@ $rootcmd.ExecuteNonQuery()
 $rootConn.Close()
 $rootcmd.Dispose()
 
+Start-Sleep -s 5
 Restart-Service -Force MSSQLSERVER
+Start-Sleep -s 30
 
 Write-Host "Enabing Mixed mode authentication - Completed"
 
@@ -116,6 +118,7 @@ IF NOT EXISTS ( SELECT  name
             WHERE   name = N'" + $DestDatabase + "' )
     CREATE DATABASE " + $DestDatabase + ";"
 
+Start-Sleep -s 10
 ReOpenConnection($masterConn)
 $mastercmd.Connection = $masterConn
 $mastercmd.ExecuteNonQuery()
@@ -134,6 +137,7 @@ CREATE USER [" + $SrcUserName + "] FOR LOGIN [" + $SrcUserName + "]
 ALTER USER [" + $SrcUserName + "] WITH DEFAULT_SCHEMA=[dbo]
 ALTER ROLE [db_owner] ADD MEMBER [" + $SrcUserName + "]
 "
+Start-Sleep -s 10
 ReOpenConnection($masterConn)
 $cmdLogin.Connection = $masterConn
 $cmdLogin.ExecuteNonQuery()
@@ -149,12 +153,13 @@ CREATE USER [" + $DestUserName + "] FOR LOGIN [" + $DestUserName + "]
 ALTER USER [" + $DestUserName + "] WITH DEFAULT_SCHEMA=[dbo]
 ALTER ROLE [db_owner] ADD MEMBER [" + $DestUserName + "]
 "
+
 ReOpenConnection($masterConn)
 $cmdLogin.Connection = $masterConn
 $cmdLogin.ExecuteNonQuery()
-
+Start-Sleep -s 5
 Write-Host "Creating Logins - Completed"
-
+Start-Sleep -s 10
  
 If ($Truncate) 
 {
