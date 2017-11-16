@@ -261,7 +261,8 @@ Write-Host "Source DB connected"
     $bulkCopy.WriteToServer($sqlReader)
    
     Write-Host "Table [$SrcTable] in [$SrcDatabase] database on [$SrcServer] has been copied to table [$DestTable] in [$DestDatabase] database on [$DestServer]"
-    Write-Host "Completed"
+    Write-Host ""
+    Write-Host "Completed" -foregroundcolor "magenta"
   }
   Catch [System.Exception]
   {
