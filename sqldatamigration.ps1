@@ -68,7 +68,7 @@ Function ReOpenConnection([System.Data.SqlClient.SqlConnection] $conn)
 Try
   {
 
-Write-Host "Enabing Mixed mode authentication"
+Write-Host "Enabling Mixed mode authentication"
 
 $rootConnStr = "Data Source=(local);Initial Catalog=master;Integrated Security=true;Connect Timeout=120"
 $rootConn  = New-Object System.Data.SqlClient.SQLConnection($rootConnStr)
@@ -89,9 +89,9 @@ $rootcmd.Dispose()
 
 Start-Sleep -s 5
 Restart-Service -Force MSSQLSERVER
-Start-Sleep -s 30
+Start-Sleep -s 15
 
-Write-Host "Enabing Mixed mode authentication - Completed"
+Write-Host "Enabling Mixed mode authentication - Completed"
 
 $masterConnStr = ConnectionString "(local)" "master" "sa" "gavs_123"
 $masterConn  = New-Object System.Data.SqlClient.SQLConnection($masterConnStr)
@@ -124,7 +124,7 @@ $mastercmd.Connection = $masterConn
 $mastercmd.ExecuteNonQuery()
 Write-Host "Creating Destination DB - Completed"
 
-Write-Host "Creating Logins"
+Write-Host "Login ID Creation"
 $cmdLogin  = new-object System.Data.SQLClient.SQLCommand
 $cmdLogin.CommandText = "USE [master]
 IF  EXISTS (SELECT * FROM sys.server_principals WHERE name = N'" + $SrcUserName + "')
@@ -158,7 +158,7 @@ ReOpenConnection($masterConn)
 $cmdLogin.Connection = $masterConn
 $cmdLogin.ExecuteNonQuery()
 Start-Sleep -s 5
-Write-Host "Creating Logins - Completed"
+Write-Host "Login ID Creation - Completed"
 Start-Sleep -s 10
  
 If ($Truncate) 
@@ -211,13 +211,13 @@ ReOpenConnection($SrcConn)
 $cmd.CommandTimeout = 600
 $cmd.Connection = $SrcConn
 $cmd.ExecuteNonQuery()
-
+Write-Host "Create Source Table - Completed" -foregroundcolor "magenta"
 
 $CmdText = "SELECT * FROM " + $SrcTable
 $SqlCommand = New-Object system.Data.SqlClient.SqlCommand($CmdText, $SrcConn) 
 ReOpenConnection($SrcConn)
 [System.Data.SqlClient.SqlDataReader] $SqlReader = $SqlCommand.ExecuteReader()
-Write-Host "Source Table connected"
+Write-Host "Source DB connected"
 
     $DestConnStr = ConnectionString $DestServer $DestDatabase $DestUserName $DestPwd
     Write-Host "Destination DB connected"
@@ -257,10 +257,10 @@ Write-Host "Source Table connected"
     $bulkcopy.batchsize = 500
     $bulkcopy.bulkcopytimeout = 600
 
-    Write-Host "Copying Started"
+    Write-Host "Copying Started..."
     $bulkCopy.WriteToServer($sqlReader)
    
-    Write-Host "Table $SrcTable in $SrcDatabase database on $SrcServer has been copied to table $DestTable in $DestDatabase database on $DestServer"
+    Write-Host "Table [$SrcTable] in [$SrcDatabase] database on [$SrcServer] has been copied to table [$DestTable] in [$DestDatabase] database on [$DestServer]"
     Write-Host "Completed"
   }
   Catch [System.Exception]
