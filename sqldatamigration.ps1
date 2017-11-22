@@ -37,16 +37,16 @@ Param
   )
 
   
-# If ($DestDatabase.Length –eq 0) 
-# {
-#    $DestDatabase = $SrcDatabase
-# }
+If ($DestDatabase.Length -eq 0) 
+{
+$DestDatabase = $SrcDatabase
+}
 
 
-# If ($DestTable.Length –eq 0) 
-# {
-#    $DestTable = $SrcTable
-# }
+If ($DestTable.Length -eq 0) 
+{
+$DestTable = $SrcTable
+}
  
 
 
