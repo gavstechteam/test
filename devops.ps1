@@ -43,12 +43,10 @@ cmd.exe /c msiexec /i $output /quiet
 Set-Location -Path "C:\Program Files\Octopus Deploy\Tentacle"
 cd "C:\Program Files\Octopus Deploy\Tentacle"
 
-cmd.exe /c Tentacle.exe create-instance --instance "Tentacle" --config "C:\Octopus\Tentacle.config"
-cmd.exe /c Tentacle.exe new-certificate --instance "Tentacle" --if-blank
-cmd.exe /c Tentacle.exe configure --instance "Tentacle" --reset-trust
-cmd.exe /c Tentacle.exe configure --instance "Tentacle" --app "C:\Octopus\Applications" --port "10933" --noListen "False"
-cmd.exe /c Tentacle.exe configure --instance "Tentacle" --trust "9074FB0F78F1DFB3402445396C8CF2E0977BCEFB"
-cmd.exe /c "netsh" advfirewall firewall add rule "name=Octopus Deploy Tentacle" dir=in action=allow protocol=TCP localport=10933
-cmd.exe /c Tentacle.exe service --instance "Tentacle" --install --stop --start
-
-
+Tentacle.exe create-instance --instance "Tentacle" --config "C:\Octopus\Tentacle.config" --console
+Tentacle.exe new-certificate --instance "Tentacle" --if-blank --console
+Tentacle.exe configure --instance "Tentacle" --reset-trust --console
+Tentacle.exe configure --instance "Tentacle" --app "C:\Octopus\Applications" --port "10933" --noListen "False" --console
+Tentacle.exe configure --instance "Tentacle" --trust "9074FB0F78F1DFB3402445396C8CF2E0977BCEFB" --console
+netsh advfirewall firewall add rule "name=Octopus Deploy Tentacle" dir=in action=allow protocol=TCP localport=10933
+Tentacle.exe service --instance "Tentacle" --install --stop --start --console
