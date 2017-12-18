@@ -1,3 +1,7 @@
+<# Altering the time zone of the machine #>
+#cd $env:WINDIR\system32\
+#tzutil /s 'India Standard Time'
+
 <# Import environment variables #>
 $WebServerPort = $env:webserverport
 
@@ -18,8 +22,12 @@ choco install googlechrome -y
 
 <# Download the Octopus Tentacle 64 bit agent to desktop location #>
 $url = "https://download.octopusdeploy.com/octopus/Octopus.Tentacle.3.16.3-x64.msi"
-$DesktopPath = [Environment]::GetFolderPath("Desktop")
-$output = "$DesktopPath\Octopus.Tentacle.3.16.3-x64.msi"
+$DownPath = "C:\temp"
+If(!(test-path $DownPath))
+{
+    New-Item -ItemType Directory -Force -Path $DownPath
+}
+$output = "$DownPath\Octopus.Tentacle.3.16.3-x64.msi"
 $start_time = Get-Date
 
 $url
@@ -42,3 +50,5 @@ cmd.exe /c Tentacle.exe configure --instance "Tentacle" --app "C:\Octopus\Applic
 cmd.exe /c Tentacle.exe configure --instance "Tentacle" --trust "9074FB0F78F1DFB3402445396C8CF2E0977BCEFB"
 cmd.exe /c "netsh" advfirewall firewall add rule "name=Octopus Deploy Tentacle" dir=in action=allow protocol=TCP localport=10933
 cmd.exe /c Tentacle.exe service --instance "Tentacle" --install --stop --start
+
+
