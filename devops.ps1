@@ -39,6 +39,13 @@ Write-Output "Time taken: $((Get-Date).Subtract($start_time).Seconds) second(s)"
 <# Octopus Tentacle silent installation #>
 cmd.exe /c msiexec /i $output /quiet
 
+<# Octopus Tentacle temp path creation #>
+$tempPath = "C:\Windows\system32\config\systemprofile\AppData\Local\Temp"
+If(!(test-path $tempPath))
+{
+    New-Item -ItemType Directory -Force -Path $tempPath
+}
+
 <# Octopus Tentacle configuring Listening Tentacle in the machine #>
 Set-Location -Path "C:\Program Files\Octopus Deploy\Tentacle"
 cd "C:\Program Files\Octopus Deploy\Tentacle"
