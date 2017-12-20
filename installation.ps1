@@ -62,10 +62,10 @@
 	try {
 		<# VC++ runtimes needed as dependencies for other installations #>
 		#choco install vcredist-all -y
-		choco install vcredist2010 -y
-		choco install vcredist2012 -y
-		choco install vcredist2013 -y
-		choco install vcredist140 -y
+		#choco install vcredist2010 -y
+		#choco install vcredist2012 -y
+		#choco install vcredist2013 -y
+		#choco install vcredist140 -y
 	}
 	catch
 	{
@@ -91,7 +91,7 @@
 			try 
 			{
 				<# SQL Server Management Studio #>
-				choco install sql-server-management-studio -y
+				#choco install sql-server-management-studio -y
 			}
 			catch
 			{
