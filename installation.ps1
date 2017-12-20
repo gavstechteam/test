@@ -8,9 +8,9 @@
  param
 	(
 		[string]$InstallIIS='true',
-		[string]$InstallTomcat='true',
+		[string]$InstallTomcat='false',
 		[string]$InstallWebSphere='false',
-		[string]$InstallMySQL='true',
+		[string]$InstallMySQL='false',
 		[string]$InstallGooglechrome='true',
 		[string]$InstallPutty='true',
 		[string]$Install7Zip='true',
