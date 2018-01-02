@@ -46,6 +46,8 @@ Write-Host "Install Octopus"
 <# Octopus Tentacle silent installation #>
 cmd.exe /c msiexec /i $output /quiet
 
+Start-Sleep -s 10
+
 Write-Host "Install Octopus - Tentacle agent"
 <# Octopus Tentacle temp path creation #>
 $tempPath = "C:\Windows\system32\config\systemprofile\AppData\Local\Temp"
@@ -65,6 +67,8 @@ cmd /c Tentacle.exe configure --instance "Tentacle" --app "C:\Octopus\Applicatio
 cmd /c Tentacle.exe configure --instance "Tentacle" --trust "9074FB0F78F1DFB3402445396C8CF2E0977BCEFB" --console
 cmd /c netsh advfirewall firewall add rule "name=Octopus Deploy Tentacle" dir=in action=allow protocol=TCP localport=10933
 cmd /c Tentacle.exe service --instance "Tentacle" --install --stop --start --console
+
+Start-Sleep -s 10
 
 <# SQL command to update the DB #>
 Write-Host "Update DB stuff"
