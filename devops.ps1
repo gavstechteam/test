@@ -14,7 +14,8 @@ Install-WindowsFeature -Name Web-Asp-Net45
 Write-Host "Enable web site port in the firewall"
 
 <# Configure the IIS server #>
-Set-WebBinding -Name 'Default Web Site' -BindingInformation "*:80:" -PropertyName Port -Value 8080
+Remove-WebSite -Name "Default Web Site"
+<# Set-WebBinding -Name 'Default Web Site' -BindingInformation "*:80:" -PropertyName Port -Value 8080 #>
 netsh advfirewall firewall add rule name="HTTP Web Application" dir=in action=allow protocol=TCP localport=8080
 
 Write-Host "Install Chrome Browser"
