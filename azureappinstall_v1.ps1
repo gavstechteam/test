@@ -3,9 +3,9 @@
    application softwares in it.
 #>
 
-<# Installing additional Components: IIS – Internet Information Server and Tools with Management TooL,Google Chrome Latest,
+<# Installing additional Components: IIS â€“ Internet Information Server and Tools with Management TooL,Google Chrome Latest,
  Mozilla Firefox Latest, Putty, 7-Zip,  G-Care Agent, Hyper-V,  DHCP, Java Runtime Latest, Tomcat, WebSphere, 
- SQL Server Management Studio 2017 (Client tool),MySQL Community Edition – latest, VC++ 2008 runtime libraries, VC++ 2010 runtime libraries,
+ SQL Server Management Studio 2017 (Client tool),MySQL Community Edition â€“ latest, VC++ 2008 runtime libraries, VC++ 2010 runtime libraries,
  VC++ 2012 runtime libraries, VC++ 2013 runtime libraries,  VC++ 2015 runtime libraries, VC++ 2017 runtime libraries, Skype,
  Adobe Reader Latest, Notepad++ Latest, Dot Net 3.5 Framework, Dot Net 4.0 Framework, Dot Net 4.5 Framework, Dot Net 4.7 Framework,
  Visual Studio Code Latest, Dot Net Core SDK Latest, DirectX Latest, Microsoft Office Profession Plus 2013 #> 
