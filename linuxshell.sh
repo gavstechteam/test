@@ -1,12 +1,13 @@
 #!/bin/bash
-tomcat = "true"
-apacheserver = "false"
-Java8 = "true"
-dotnetcore = "true"
-MYsql = "true"
-python = "false"
-php = "false"
-if [ $tomcat == "true" ]; then
+tomcat="true"
+apacheserver="false"
+Java8="false"
+dotnetcore="false"
+MYsql="false"
+python="false"
+php="false"
+if [ $tomcat == "true" ]
+then
  sudo yum install tomcat
  sudo systemctl start tomcat
  sudo systemctl enable tomcat
@@ -14,7 +15,8 @@ if [ $tomcat == "true" ]; then
  sudo rm -f /var/run/yum.pid
 fi
 
-if [ $python == "true" ]; then
+if [ $python == "true" ] 
+then
  sudo yum -y groupinstall development
  sudo yum -y install zlib-level
  wget https://www.python.org/ftp/python/3.6.3/Python-3.6.3.tar.xz
@@ -26,7 +28,8 @@ if [ $python == "true" ]; then
  sudo rm -f /var/run/yum.pid
 fi
 
-if [ $apacheserver == "true" ]; then
+if [ $apacheserver == "true" ] 
+then
  sudo yum install httpd;
  sudo systemctl enable httpd.service;
  sudo systemctl start httpd.service;
@@ -34,7 +37,8 @@ if [ $apacheserver == "true" ]; then
  sudo rm -f /var/run/yum.pid
 fi
 
-if [ $dotnetcore == "true" ]; then
+if [ $dotnetcore == "true" ]
+then
  sudo yum install centos-release-dotnet
  sudo yum install rh-dotnet20
  scl enable rh-dotnet20 bash
@@ -42,7 +46,8 @@ if [ $dotnetcore == "true" ]; then
  sudo rm -f /var/run/yum.pid
 fi
 
-if [ $MYsql == "true" ]; then
+if [ $MYsql == "true" ]
+then
  sudo yum install mariadb-server
  sudo systemctl start mariadb
  sudo systemctl enable mariab
@@ -51,13 +56,15 @@ if [ $MYsql == "true" ]; then
  sudo rm -f /var/run/yum.pid
 fi
 
-if [ $Java8 == "true" ]; then
+if [ $Java8 == "true" ]
+then
  sudo yum install java-1.8.0-openjdk
  java -version
  sudo rm -f /var/run/yum.pid
 fi
 
-if [ $php == "true" ]; then
+if [ $php == "true" ] 
+then
  sudo yum install php php-mysql
  sudo systemctl restart httpd.service
  sudo yum search php-
@@ -68,5 +75,5 @@ if [ $php == "true" ]; then
  sudo firewall-cmd --reload
  sudo rm -f /var/run/yum.pid
 fi 
-~
+
 
