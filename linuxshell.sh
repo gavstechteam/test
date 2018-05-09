@@ -1,11 +1,11 @@
 #!/bin/bash
-tomcat="true"
-apacheserver="false"
-Java8="false"
-dotnetcore="false"
-MYsql="false"
-python="false"
-php="false"
+tomcat=$1
+apacheserver=$2
+Java8=$3
+dotnetcore=$4
+MYsql=$5
+python=$6
+php=$7
 if [ $tomcat == "true" ]
 then
  sudo yum install tomcat
@@ -15,7 +15,7 @@ then
  sudo rm -f /var/run/yum.pid
 fi
 
-if [ $python == "true" ] 
+if [ $python == "true" ]
 then
  sudo yum -y groupinstall development
  sudo yum -y install zlib-level
@@ -28,7 +28,7 @@ then
  sudo rm -f /var/run/yum.pid
 fi
 
-if [ $apacheserver == "true" ] 
+if [ $apacheserver == "true" ]
 then
  sudo yum install httpd;
  sudo systemctl enable httpd.service;
@@ -63,7 +63,7 @@ then
  sudo rm -f /var/run/yum.pid
 fi
 
-if [ $php == "true" ] 
+if [ $php == "true" ]
 then
  sudo yum install php php-mysql
  sudo systemctl restart httpd.service
@@ -74,6 +74,5 @@ then
  sudo firewall-cmd --permanent --zone=public --add-service=https
  sudo firewall-cmd --reload
  sudo rm -f /var/run/yum.pid
-fi 
-
+fi
 
