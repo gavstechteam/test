@@ -1,11 +1,11 @@
 #!/bin/bash
-tomcat=$1
-apacheserver=$2
-Java8=$3
-dotnetcore=$4
-MYsql=$5
-python_i=$6
-php=$7
+tomcat = "true"
+apacheserver = "false"
+Java8 = "true"
+dotnetcore = "true"
+MYsql = "true"
+python = "false"
+php = "false"
 if [ $tomcat = "true" ]; then
  sudo yum install tomcat
  sudo systemctl start tomcat
@@ -14,7 +14,7 @@ if [ $tomcat = "true" ]; then
  sudo rm -f /var/run/yum.pid
 fi
 
-if [ $python_i = "true" ]; then
+if [ $python = "true" ]; then
  sudo yum -y groupinstall development
  sudo yum -y install zlib-level
  wget https://www.python.org/ftp/python/3.6.3/Python-3.6.3.tar.xz
