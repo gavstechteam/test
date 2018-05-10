@@ -1,4 +1,5 @@
 #!/bin/bash
+sudo apt-get install yum*
 sudo yum install tomcat
 sudo systemctl start tomcat
  sudo systemctl enable tomcat
