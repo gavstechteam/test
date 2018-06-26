@@ -8,7 +8,9 @@
 
  Param(
   [string]$InstallGooglechrome,
-  [string]$InstallPutty
+  [string]$InstallPutty,
+  [string]$InstallMozillaFirefox,
+  [string]$Install7Zip
 )
 
    
@@ -16,6 +18,8 @@
 
   $InstallGooglechrome | out-file "C:\output.txt"
   $InstallPutty | Add-Content "C:\output.txt"
+  $InstallMozillaFirefox | out-file "C:\output.txt"
+  $Install7Zip | Add-Content "C:\output.txt"
 
 <#TimeZone Alteration#>
 	try {
@@ -85,6 +89,43 @@ Start-Sleep -s 5
 		Write-Output $ErrorMessage
 	}
 
+Start-Sleep -s 5
+
+<#Mozilla Firefox latest#>
+try
+    {
+        If($InstallMozillaFirefox -eq "true")
+        {
+            <# Mozilla Firefox latest#>
+            choco install firefox --version 58.0.2 -y
+         }          
+    }
+catch
+    {
+        Write-Output "Unable to install Firefox application"
+	    $ErrorMessage = $_.Exception.Message
+	    $FailedItem = $_.Exception.ItemName
+	    Write-Output $ErrorMessage
+	}
+	
+Start-Sleep -s 5
+
+<#7-Zip#>
+try {
+    If($Install7Zip -eq "true")
+    {
+        <#7-Zip application#>
+        choco install 7zip.install -y
+    }
+}
+catch
+    {
+        Write-Output "Unable to install 7-zip application"
+		$ErrorMessage = $_.Exception.Message
+		$FailedItem = $_.Exception.ItemName
+		Write-Output $ErrorMessage
+	}
+	
 	
 
 	
