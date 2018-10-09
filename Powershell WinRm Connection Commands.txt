@@ -1,0 +1,29 @@
+Enable-PSRemoting -Force
+
+New-NetFirewallRule -Name "WinRM HTTPS" -DisplayName "WinRM HTTPS" -Enabled True -Profile "Any" -Action "Allow" -Direction "Inbound" -LocalPort 5986 -Protocol "TCP" 
+
+**Set the server-ip to trusted host**
+Set-Item WSMan:\localhost\Client\TrustedHosts -Value "13.66.128.187" -Force
+
+**Enter-PSSession**
+Enter-PSSession -ConnectionUri https://13.66.128.187:5986 -Credential $Credentials -SessionOption (New-PSSessionOption -SkipCACheck -SkipCNCheck -SkipRevocationCheck)
+
+**To install specific application**
+Invoke-Command -ScriptBlock {
+Get-ChildItem -Path c:\
+choco install notepadplusplus -y
+}
+
+**Exit the session**
+Exit-PSSession
+
+**Creating a session and copying file from target machine to the remote machine**
+$connectionuri = "https://13.66.253.183:5986"
+$ds = New-PSSession -ConnectionUri $connectionuri  -Credential $Credentials -SessionOption (New-PSSessionOption -SkipCACheck -SkipCNCheck -SkipRevocationCheck)
+Copy-Item -Path C:\temp1\powershellwinrmfile\powershellinstallapp.ps1 -Destination 'c:\temp\1.ps1' -ToSession $ds
+
+**Once copy is done enter into the PSSession and Execute the file**
+Enter-PSSession $ds
+powershell -ExecutionPolicy Unrestricted -File C:\temp\1.ps1 -InstallNotepadplusplus 'true' -Install7Zip 'true'
+
+
