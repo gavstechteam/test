@@ -1,0 +1,57 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "adminPassword": { "value": "gavs_123" },
+    "adminUsername": { "value": "gavsadmin" },
+    "cmdExecutePrefix": { "value": "powershell -ExecutionPolicy Unrestricted -File" },
+    "extnPublisher": { "value": "Microsoft.Compute" },
+    "extnType": { "value": "CustomScriptExtension" },
+    "extnTypeVersion": { "value": "1.9" },
+    "location": { "value": "eastus2" },
+    "osProfileParams":  {
+      "value": {
+        "computerName": "testavl-vm",
+        "adminUsername": "gavsadmin",
+        "adminPassword": "gavs_123",
+        "windowsConfiguration": {
+          "enableAutomaticUpdates": true,
+          "timeZone": "UTC"
+        }
+      }
+    },
+    "resourcePrefix": { "value": "testavl" },
+    "resourceSuffix": { "value": "1" },
+    "scriptFileParams": { "value": "-InstallGooglechrome true -InstallMozillaFirefox true " },
+    "scriptFileURI": { "value": "https://kpteststorage1.blob.core.windows.net/windows-powershell-script-new/windows-powershell-script-new.ps1" },
+    "virtualMachineName": { "value": "testavl-vm" },
+    "virtualMachineSize": { "value": "Standard_A2" },
+    "vmImageOffer": { "value": "WindowsServer" },
+    "vmImagePublisher": { "value": "MicrosoftWindowsServer" },
+    "vmImageSKU": { "value": "2016-Datacenter" },
+     "availabilitySetName": { "value": "availset1"   },
+     "availabilitySetPlatformFaultDomainCount": {  "value": 2    },
+     "availabilitySetPlatformUpdateDomainCount": {  "value": 5   },
+    "vmNetworkSecurityRules": {
+      "value": {
+        "securityRules": [
+          {
+            "name": "RDP",
+            "properties": {
+              "priority": 100,
+              "protocol": "TCP",
+              "access": "Allow",
+              "direction": "Inbound",
+              "sourceApplicationSecurityGroups": [ ],
+              "destinationApplicationSecurityGroups": [ ],
+              "sourceAddressPrefix": "*",
+              "sourcePortRange": "*",
+              "destinationAddressPrefix": "*",
+              "destinationPortRange": "3389"
+            }
+          }
+        ]
+      }
+    }
+  }
+}
