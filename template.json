@@ -205,7 +205,7 @@
       "location": "[parameters('location')]",
       "dependsOn": [       
          "[concat('Microsoft.Network/networkInterfaces/', parameters('networkInterfaceName'))]",
-        "[concat('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]"
+         "[concat('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]"
       ],
       "properties": {
         "osProfile": "[parameters('osProfileParams')]",
@@ -278,9 +278,9 @@
       "name": "[parameters('networkInterfaceName')]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[concat('Microsoft.Network/networkSecurityGroups/', parameters('networkSecurityGroupName'))]",
-        "[concat('Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'))]",
-        "[concat('Microsoft.Network/publicIPAddresses/', parameters('publicIPAddressName'))]"
+        "[resourceId('Microsoft.Network/networkSecurityGroups/', parameters('networkSecurityGroupName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'))]",
+        "[resourceId('Microsoft.Network/publicIPAddresses/', parameters('publicIPAddressName'))]"
       ],
       "properties": {
         "ipConfigurations": [
