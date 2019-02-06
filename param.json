@@ -3,9 +3,9 @@
   "contentVersion": "1.0.0.0",
 
   "parameters": {
-    "resourcePrefix": { "value": "azpubip" },
-    "resourceSuffix": { "value": "2" },
-    "location": { "value": "westus2" },
+    "resourcePrefix": { "value": "testarm" },
+    "resourceSuffix": { "value": "1" },
+    "location": { "value": "eastus2" },
     "virtualMachineName": { "value": "publicip-vm" },
     "virtualMachineSize": { "value": "Standard_A2" },
     "adminUsername": { "value": "gavsadmin" },

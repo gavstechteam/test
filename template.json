@@ -4,7 +4,7 @@
       "parameters": {
         "resourcePrefix": {
           "type": "string",
-          "defaultValue": "azarm"
+          "defaultValue": "testarm"
         },
         "resourceSuffix": {
           "type": "string",
@@ -196,102 +196,102 @@
         "scriptFileName": "[last(split(parameters('scriptFileURI'),'/'))]",
         "cmdToExecute": "[concat(parameters('cmdExecutePrefix'), ' ', variables('scriptFileName'), ' ', parameters('scriptFileParams'))]"
       },
-      "resources": [
-        {
-          "name": "[parameters('virtualMachineName')]",
-          "type": "Microsoft.Compute/virtualMachines",
-          "apiVersion": "2017-12-01",
-          "location": "[parameters('location')]",
-          "dependsOn": [ "[concat('Microsoft.Network/networkInterfaces/', parameters('networkInterfaceName'))]", "[concat('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]" ],
-          "properties": {
-            "osProfile": "[parameters('osProfileParams')]",
-            "hardwareProfile": { "vmSize": "[parameters('virtualMachineSize')]" },
-            "storageProfile": {
-              "imageReference": {
-                "publisher": "[parameters('vmImagePublisher')]",
-                "offer": "[parameters('vmImageOffer')]",
-                "sku": "[parameters('vmImageSKU')]",
-                "version": "[parameters('vmImageVersion')]"
-              },
-              "dataDisks": [ ]
-            },
-            "networkProfile": { "networkInterfaces": [ { "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaceName'))]" } ] }
+  "resources": [
+    {
+      "name": "[parameters('storageAccountName')]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2015-06-15",
+      "location": "[parameters('location')]",
+      "properties": { "accountType": "[parameters('storageAccountType')]" }
+    },
+    {
+      "condition": "[equals(parameters('publicipstatus'), 'No')]",
+      "name": "[parameters('publicIpAddressName')]",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2017-08-01",
+      "location": "[parameters('location')]",
+      "properties": { "publicIPAllocationMethod": "[parameters('publicIpAddressType')]" },
+      "sku": { "name": "[parameters('publicIpAddressSku')]" }
+    },
+    {
+      "name": "[parameters('networkSecurityGroupName')]",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2018-01-01",
+      "location": "[parameters('location')]",
+      "properties": "[parameters('vmNetworkSecurityRules')]"
+    },
+    {
+      "name": "[parameters('virtualNetworkName')]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2018-02-01",
+      "location": "[parameters('location')]",
+      "properties": {
+        "addressSpace": { "addressPrefixes": [ "[parameters('addressPrefix')]" ] },
+        "subnets": [
+          {
+            "name": "[parameters('subnetName')]",
+            "properties": { "addressPrefix": "[parameters('subnetPrefix')]" }
           }
-        },
-        {
-          "apiVersion": "2015-06-15",
-          "type": "Microsoft.Compute/virtualMachines/extensions",
-          "name": "[concat(parameters('virtualMachineName'), '/', variables('vmExtension'))]",
-          "location": "[parameters('location')]",
-          "dependsOn": [ "[concat('Microsoft.Compute/virtualMachines/', parameters('virtualMachineName'))]" ],
-          "properties": {
-            "publisher": "[parameters('extnPublisher')]",
-            "type": "[parameters('extnType')]",
-            "typeHandlerVersion": "[parameters('extnTypeVersion')]",
-            "autoUpgradeMinorVersion": true,
-            "settings": { "fileUris": [ "[parameters('scriptFileURI')]" ] },
-            "protectedSettings": { "commandToExecute": "[variables('cmdToExecute')]" }
+        ]
+      }
+    },
+    {
+      "name": "[parameters('networkInterfaceName')]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2018-10-01",
+      "location": "[parameters('location')]",
+      "dependsOn": [ "[concat('Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'))]", "[concat('Microsoft.Network/publicIpAddresses/', parameters('publicIpAddressName'))]", "[concat('Microsoft.Network/networkSecurityGroups/', parameters('networkSecurityGroupName'))]" ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "subnet": { "id": "[variables('subnetRef')]" },
+              "privateIPAllocationMethod": "Dynamic",
+              "publicIpAddress": { "id": "[resourceId(variables('resourceGroup'),'Microsoft.Network/publicIpAddresses', parameters('publicIpAddressName'))]" }
+            }
           }
+        ],
+        "networkSecurityGroup": { "id": "[resourceId(variables('resourceGroup'), 'Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroupName'))]" }
+      }
+    },    
+    {
+      "name": "[parameters('virtualMachineName')]",
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2017-12-01",
+      "location": "[parameters('location')]",
+      "dependsOn": [ "[concat('Microsoft.Network/networkInterfaces/', parameters('networkInterfaceName'))]", "[concat('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]" ],
+      "properties": {
+        "osProfile": "[parameters('osProfileParams')]",
+        "hardwareProfile": { "vmSize": "[parameters('virtualMachineSize')]" },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[parameters('vmImagePublisher')]",
+            "offer": "[parameters('vmImageOffer')]",
+            "sku": "[parameters('vmImageSKU')]",
+            "version": "[parameters('vmImageVersion')]"
+          },
+          "dataDisks": [ ]
         },
-        {
-          "name": "[parameters('storageAccountName')]",
-          "type": "Microsoft.Storage/storageAccounts",
-          "apiVersion": "2015-06-15",
-          "location": "[parameters('location')]",
-          "properties": { "accountType": "[parameters('storageAccountType')]" }
-        },
-        {
-          "name": "[parameters('virtualNetworkName')]",
-          "type": "Microsoft.Network/virtualNetworks",
-          "apiVersion": "2018-02-01",
-          "location": "[parameters('location')]",
-          "properties": {
-            "addressSpace": { "addressPrefixes": [ "[parameters('addressPrefix')]" ] },
-            "subnets": [
-              {
-                "name": "[parameters('subnetName')]",
-                "properties": { "addressPrefix": "[parameters('subnetPrefix')]" }
-              }
-            ]
-          }
-        },
-        {
-          "name": "[parameters('networkInterfaceName')]",
-          "type": "Microsoft.Network/networkInterfaces",
-          "apiVersion": "2018-10-01",
-          "location": "[parameters('location')]",
-          "dependsOn": [ "[concat('Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'))]", "[concat('Microsoft.Network/publicIpAddresses/', parameters('publicIpAddressName'))]", "[concat('Microsoft.Network/networkSecurityGroups/', parameters('networkSecurityGroupName'))]" ],
-          "properties": {
-            "ipConfigurations": [
-              {
-                "name": "ipconfig1",
-                "properties": {
-                  "subnet": { "id": "[variables('subnetRef')]" },
-                  "privateIPAllocationMethod": "Dynamic",
-                  "publicIpAddress": { "id": "[resourceId(variables('resourceGroup'),'Microsoft.Network/publicIpAddresses', parameters('publicIpAddressName'))]" }
-                }
-              }
-            ],
-            "networkSecurityGroup": { "id": "[resourceId(variables('resourceGroup'), 'Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroupName'))]" }
-          }
-        },
-        {
-          "condition": "[equals(parameters('publicipstatus'), 'No')]",
-          "name": "[parameters('publicIpAddressName')]",
-          "type": "Microsoft.Network/publicIPAddresses",
-          "apiVersion": "2017-08-01",
-          "location": "[parameters('location')]",
-          "properties": { "publicIPAllocationMethod": "[parameters('publicIpAddressType')]" },
-          "sku": { "name": "[parameters('publicIpAddressSku')]" }
-        },
-        {
-          "name": "[parameters('networkSecurityGroupName')]",
-          "type": "Microsoft.Network/networkSecurityGroups",
-          "apiVersion": "2018-01-01",
-          "location": "[parameters('location')]",
-          "properties": "[parameters('vmNetworkSecurityRules')]"
-        }
-      ],
+        "networkProfile": { "networkInterfaces": [ { "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaceName'))]" } ] }
+      }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(parameters('virtualMachineName'), '/', variables('vmExtension'))]",
+      "location": "[parameters('location')]",
+      "dependsOn": [ "[concat('Microsoft.Compute/virtualMachines/', parameters('virtualMachineName'))]" ],
+      "properties": {
+        "publisher": "[parameters('extnPublisher')]",
+        "type": "[parameters('extnType')]",
+        "typeHandlerVersion": "[parameters('extnTypeVersion')]",
+        "autoUpgradeMinorVersion": true,
+        "settings": { "fileUris": [ "[parameters('scriptFileURI')]" ] },
+        "protectedSettings": { "commandToExecute": "[variables('cmdToExecute')]" }
+      }
+    }    
+  ],
       "outputs": {
         "UserName": {
           "type": "string",
