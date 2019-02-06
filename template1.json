@@ -4,7 +4,7 @@
       "parameters": {
         "resourcePrefix": {
           "type": "string",
-          "defaultValue": "azpip"
+          "defaultValue": "azpubip"
         },
         "resourceSuffix": {
           "type": "string",
@@ -260,7 +260,7 @@
           "type": "Microsoft.Network/networkInterfaces",
           "apiVersion": "2018-10-01",
           "location": "[parameters('location')]",
-          "dependsOn": [ "[concat('Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'))]", "[concat('Microsoft.Network/publicIpAddresses/', parameters('publicIpAddressName'))]" ],
+          "dependsOn": [ "[concat('Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'))]", "[concat('Microsoft.Network/publicIpAddresses/', parameters('publicIpAddressName'))]", "[concat('Microsoft.Network/networkSecurityGroups/', parameters('networkSecurityGroupName'))]" ],
           "properties": {
             "ipConfigurations": [
               {
@@ -271,8 +271,7 @@
                   "publicIpAddress": { "id": "[resourceId(variables('resourceGroup'),'Microsoft.Network/publicIpAddresses', parameters('publicIpAddressName'))]" }
                 }
               }
-            ],
-            "networkSecurityGroup": { "id": "[resourceId(variables('resourceGroup'), 'Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroupName'))]" }
+            ]            
           }
         },
         {
