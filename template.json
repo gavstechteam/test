@@ -1,0 +1,310 @@
+{
+      "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "resourcePrefix": {
+          "type": "string",
+          "defaultValue": "azarm"
+        },
+        "resourceSuffix": {
+          "type": "string",
+          "defaultValue": "1"
+        },
+        "location": {
+          "type": "string",
+          "defaultValue": "eastus"
+        },
+        "vmTags": {
+          "type": "string",
+          "defaultValue": "[concat(parameters('resourcePrefix'), parameters('resourceSuffix'))]"
+        },
+        "virtualMachineName": {
+          "type": "string",
+          "defaultValue": "[concat(parameters('resourcePrefix'), parameters('resourceSuffix'), '-vm')]",
+          "maxLength": 15
+        },
+        "virtualMachineSize": {
+          "type": "string",
+          "defaultValue": "Standard_A2"
+        },
+        "adminUsername": {
+          "type": "string",
+          "defaultValue": "gavsadmin"
+        },
+        "adminPassword": {
+          "type": "securestring",
+          "minLength": 8,
+          "maxLength": 32
+        },
+        "virtualNetworkName": {
+          "type": "string",
+          "defaultValue": "[concat(parameters('resourcePrefix'), parameters('resourceSuffix'), '-vnet')]"
+        },
+        "networkInterfaceName": {
+          "type": "string",
+          "defaultValue": "[concat(parameters('resourcePrefix'), parameters('resourceSuffix'), '-nic')]"
+        },
+        "networkSecurityGroupName": {
+          "type": "string",
+          "defaultValue": "[concat(parameters('resourcePrefix'), parameters('resourceSuffix'), '-nsg')]"
+        },
+        "storageAccountName": {
+          "type": "string",
+          "defaultValue": "[toLower(concat(parameters('resourcePrefix'), parameters('resourceSuffix'), 'stracc'))]"
+        },
+        "storageAccountType": {
+          "type": "string",
+          "defaultValue": "Standard_LRS"
+        },
+        "addressPrefix": {
+          "type": "string",
+          "defaultValue": "10.0.0.0/16"
+        },
+        "subnetPrefix": {
+          "type": "string",
+          "defaultValue": "10.0.0.0/24"
+        },
+        "subnetName": {
+          "type": "string",
+          "defaultValue": "[concat(parameters('resourcePrefix'), parameters('resourceSuffix'), '-subnet')]"
+        },
+        "publicIpAddressName": {
+          "type": "string",
+          "defaultValue": "[concat(parameters('resourcePrefix'), parameters('resourceSuffix'), '-pip')]"
+        },
+        "publicIpAddressType": {
+          "type": "string",
+          "defaultValue": "Dynamic"
+        },
+        "publicIpAddressSku": {
+          "type": "string",
+          "defaultValue": "Basic"
+        },
+        "vmTimeZone": {
+          "type": "string",
+          "defaultValue": "UTC"
+        },
+        "vmOSPubkeys": {
+          "type": "string",
+          "defaultValue": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDNddFVsi0eW50UFgRZdnXJbqqK7TKUNJbWKzfGLiFoYV1+wvZJo6B3L6g4wChehAS2rUA0+nBM4NCI9nWyL4etlC61cMBLkNiEjzAQr4V6BpCLChIdtK2BobAlgGCaznLV424AO8GmGp72fSR58ZhbginisIaB+6S2QhlmuD8xHTFS9VNFQ53B2aW/SWlZz0RXmFN7hf2aHr0xdZGxxqyT2dZ5t3AeIyck/W0Gbv6yBg0NmS1b8q2uj9o3nxAphjbLXSfq2hFegXJi2xxXNNxv/RGvks3EcPYdbCv8DTtA9bgqygyHKzgPTWFlF8Wd4w/vNIYcPRX3vzJFqDLwLZVn piyush@200411LTP0359"
+        },
+        "vmImagePublisher": {
+          "type": "string",
+          "defaultValue": "MicrosoftWindowsServer"
+        },
+        "vmImageOffer": {
+          "type": "string",
+          "defaultValue": "WindowsServer"
+        },
+        "vmImageSKU": {
+          "type": "string",
+          "defaultValue": "2016-Datacenter"
+        },
+        "vmImageVersion": {
+          "type": "string",
+          "defaultValue": "latest"
+        },
+        "extnPublisher": {
+          "type": "string",
+          "defaultValue": "Microsoft.Compute"
+        },
+        "extnType": {
+          "type": "string",
+          "defaultValue": "CustomScriptExtension"
+        },
+        "extnTypeVersion": {
+          "type": "string",
+          "defaultValue": "1.9"
+        },
+        "scriptFileURI": {
+          "type": "string",
+          "defaultValue": "https://kpteststorage1.blob.core.windows.net/windows-powershell-script-new/windows-powershell-script-new.ps1"
+        },
+        "scriptFileParams": {
+          "type": "string",
+          "defaultValue": "-InstallGooglechrome true"
+        },
+        "cmdExecutePrefix": {
+          "type": "string",
+          "defaultValue": "powershell -ExecutionPolicy Unrestricted -File"
+        },
+         "EnablePublicIP": {
+          "type": "string",
+          "allowedValues": [
+            "Yes",
+            "No"
+          ],
+          "defaultValue": "No",
+            "metadata": {
+                "description": "Select whether the Public IP should be enabled or not."
+            }
+        },
+        "osProfileParams": {
+          "type": "object",
+          "defaultValue": {
+            "computerName": "[parameters('virtualMachineName')]",
+            "adminUsername": "[parameters('adminUsername')]",
+            "adminPassword": "[parameters('adminPassword')]",
+            "windowsConfiguration": {
+              "enableAutomaticUpdates": true,
+              "timeZone": "[parameters('vmTimeZone')]"
+            }
+          }
+        },
+        "vmNetworkSecurityRules": {
+          "type": "object",
+          "defaultValue": {
+            "securityRules": [
+              {
+                "name": "RDP",
+                "properties": {
+                  "priority": 300,
+                  "protocol": "Tcp",
+                  "access": "Allow",
+                  "direction": "Inbound",
+                  "sourceApplicationSecurityGroups": [ ],
+                  "destinationApplicationSecurityGroups": [ ],
+                  "sourceAddressPrefix": "*",
+                  "sourcePortRange": "*",
+                  "destinationAddressPrefix": "*",
+                  "destinationPortRange": "3389"
+                }
+              },
+              {
+                "name": "SSH",
+                "properties": {
+                  "priority": 310,
+                  "protocol": "Tcp",
+                  "access": "Allow",
+                  "direction": "Inbound",
+                  "sourceApplicationSecurityGroups": [ ],
+                  "destinationApplicationSecurityGroups": [ ],
+                  "sourceAddressPrefix": "*",
+                  "sourcePortRange": "*",
+                  "destinationAddressPrefix": "*",
+                  "destinationPortRange": "22"
+                }
+              }
+            ]
+          }
+        }
+      },
+      "variables": {
+        "resourceGroup": "[concat(parameters('resourcePrefix'), parameters('resourceSuffix'), '-rg')]",
+        "vnetId": "[resourceId(variables('resourceGroup'),'Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
+        "subnetRef": "[concat(variables('vnetId'), '/subnets/', parameters('subnetName'))]",
+        "vmExtension": "[concat(parameters('resourcePrefix'), parameters('resourceSuffix'), '-vmext')]",
+        "scriptFileName": "[last(split(parameters('scriptFileURI'),'/'))]",
+        "cmdToExecute": "[concat(parameters('cmdExecutePrefix'), ' ', variables('scriptFileName'), ' ', parameters('scriptFileParams'))]"
+      },
+  "resources": [
+    {
+      "name": "[parameters('storageAccountName')]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2015-06-15",
+      "location": "[parameters('location')]",
+      "properties": { "accountType": "[parameters('storageAccountType')]" }
+    },
+    {
+      "condition": "[equals(parameters('EnablePublicIP'), 'Yes')]",
+      "name": "[parameters('publicIpAddressName')]",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2017-08-01",
+      "location": "[parameters('location')]",
+      "properties": { "publicIPAllocationMethod": "[parameters('publicIpAddressType')]" },
+      "sku": { "name": "[parameters('publicIpAddressSku')]" }
+    },
+    {
+      "name": "[parameters('networkSecurityGroupName')]",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2018-01-01",
+      "location": "[parameters('location')]",
+      "properties": "[parameters('vmNetworkSecurityRules')]"
+    },
+    {
+      "name": "[parameters('virtualNetworkName')]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2018-02-01",
+      "location": "[parameters('location')]",
+      "properties": {
+        "addressSpace": { "addressPrefixes": [ "[parameters('addressPrefix')]" ] },
+        "subnets": [
+          {
+            "name": "[parameters('subnetName')]",
+            "properties": { "addressPrefix": "[parameters('subnetPrefix')]" }
+          }
+        ]
+      }
+    },
+    {
+      "name": "[parameters('networkInterfaceName')]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2018-10-01",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/networkSecurityGroups/', parameters('networkSecurityGroupName'))]",
+        "[concat('Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'))]",
+        "[concat('Microsoft.Network/publicIpAddresses/', parameters('publicIpAddressName'))]"
+      ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {             
+              "privateIPAllocationMethod": "Dynamic",
+              "publicIpAddress": { "id": "[resourceId(variables('resourceGroup'),'Microsoft.Network/publicIpAddresses', parameters('publicIpAddressName'))]" },
+              "networkSecurityGroup": { "id": "[resourceId(variables('resourceGroup'), 'Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroupName'))]" },
+               "subnet": { "id": "[variables('subnetRef')]" }
+            }
+          }
+        ]               
+      }
+    },    
+    {
+      "name": "[parameters('virtualMachineName')]",
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2017-12-01",
+      "location": "[parameters('location')]",
+      "dependsOn": [ "[concat('Microsoft.Network/networkInterfaces/', parameters('networkInterfaceName'))]", "[concat('Microsoft.Storage/storageAccounts/', parameters('storageAccountName'))]" ],
+      "properties": {
+        "osProfile": "[parameters('osProfileParams')]",
+        "hardwareProfile": { "vmSize": "[parameters('virtualMachineSize')]" },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[parameters('vmImagePublisher')]",
+            "offer": "[parameters('vmImageOffer')]",
+            "sku": "[parameters('vmImageSKU')]",
+            "version": "[parameters('vmImageVersion')]"
+          },
+          "dataDisks": [ ]
+        },
+        "networkProfile": { "networkInterfaces": [ { "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaceName'))]" } ] }
+      }
+    },
+    {
+      "apiVersion": "2015-06-15",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(parameters('virtualMachineName'), '/', variables('vmExtension'))]",
+      "location": "[parameters('location')]",
+      "dependsOn": [ "[concat('Microsoft.Compute/virtualMachines/', parameters('virtualMachineName'))]" ],
+      "properties": {
+        "publisher": "[parameters('extnPublisher')]",
+        "type": "[parameters('extnType')]",
+        "typeHandlerVersion": "[parameters('extnTypeVersion')]",
+        "autoUpgradeMinorVersion": true,
+        "settings": { "fileUris": [ "[parameters('scriptFileURI')]" ] },
+        "protectedSettings": { "commandToExecute": "[variables('cmdToExecute')]" }
+      }
+    }    
+  ],
+      "outputs": {
+        "UserName": {
+          "type": "string",
+          "value": "[parameters('adminUsername')]"
+        },
+        "MachineName": {
+          "type": "string",
+          "value": "[parameters('virtualMachineName')]"
+        }
+      }
+    }
