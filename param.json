@@ -13,7 +13,7 @@
     "vmImagePublisher": { "value": "MicrosoftWindowsServer" },
     "vmImageOffer": { "value": "WindowsServer" },
     "vmImageSKU": { "value": "2016-Datacenter" }, 
-    "EnablePublicIP": { "value":  "No"},  
+    "enablePublicIP": { "value":  "No"},  
     "extnPublisher": { "value": "Microsoft.Compute" },
     "extnType": { "value": "CustomScriptExtension" },
     "extnTypeVersion": { "value": "1.9" },
